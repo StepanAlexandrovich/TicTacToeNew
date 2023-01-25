@@ -39,7 +39,16 @@ class HelperField {
         
         return 0;
     }
-      
+
+    boolean deadLock(Matrix matrix){
+        for(int i = 0;i<matrix.getLength();i++){
+            if(matrix.getSymbol(i).equals(symbolEmpty)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     boolean legalMove(int index,Matrix matrix){
         if(
                 matrix.range(index)&&

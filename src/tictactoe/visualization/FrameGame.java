@@ -10,6 +10,9 @@ import javax.swing.*;
 public class FrameGame extends JFrame{
     private Render render = new Render();
     private int indexUser = -1;
+    private JLabel extra;
+
+    private int heightExtra = render.getWidth()/10;
 
     public FrameGame(){
         Panel panel = new Panel();
@@ -17,8 +20,11 @@ public class FrameGame extends JFrame{
         panel.addComponent(
                 new CanvasGame(),0,0,render.getWidth(),render.getHeight()
         );
+        panel.addComponent(
+                extra = new Extra(),0,render.getHeight(),render.getWidth(),heightExtra
+        );
 
-        addComponent(panel,render.getWidth(),render.getHeight());
+        addComponent(panel,render.getWidth(),render.getHeight() + heightExtra);
 
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -27,17 +33,21 @@ public class FrameGame extends JFrame{
 
     public int getIndexUser(){ return indexUser; }
 
-    public void setIndexUser(int x,int y){
-        indexUser = y* PS.width+x;
+    void setIndexUser(int x,int y){
+        indexUser = y*PS.width+x;
     }
 
-    public void update(Matrix matrix){
+    public void setText(String text){
+        extra.setText(text);
+    }
+
+    public void update(Matrix matrix,int lastMove){
         indexUser = -1;
-        render.process(matrix);
+        render.process(matrix,lastMove);
         repaint();
     }
     ///////////////////////
-    public void addComponent(JComponent component,int width,int height){
+    void addComponent(JComponent component,int width,int height){
         component.setLayout(null);
         component.setPreferredSize(new Dimension(width,height));
         add(component);
@@ -54,7 +64,6 @@ public class FrameGame extends JFrame{
     private class CanvasGame extends JLabel{
         CanvasGame(){
             super(new ImageIcon(render.getImage()));
-            
             addMouseListener(new Mouse(){
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -65,6 +74,13 @@ public class FrameGame extends JFrame{
             });
         }
 
+    }
+
+    private class Extra extends JLabel{
+        Extra(){
+            Font font = new Font("SansSerif", Font.BOLD, 15);
+            setFont(font);
+        }
     }
 
 }

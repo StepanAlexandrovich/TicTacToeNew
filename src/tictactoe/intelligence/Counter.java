@@ -2,18 +2,16 @@ package tictactoe.intelligence;
 
 import tictactoe.PS;
 import tictactoe.environment.Field;
+import tictactoe.matrix.Matrix;
 
 public class Counter {
-    private Field field;
+    private Field field = new Field();
     private int bestMove;
-    
-    public Counter(Field field){
-        this.field = field;
-    }
-    
-    public int process(){
+
+    public int process(Matrix matrix, String symbol){
+        field.setStart(matrix, symbol);
         recursion(PS.getDepth());
-        
+
         return bestMove;
     }
     

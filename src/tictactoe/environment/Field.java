@@ -16,10 +16,10 @@ public class Field {
     public String getSymbol(){ return step.symbol ; }
     public String getSymbolNext(){ return PS.inversionSymbol(step.symbol); }
     public Matrix getMatrix(){ return matrix.copy(); }
-    public int getResult(){ return helper.getWinner(matrix,step.symbol); }
+    public int getResult(){ return step.result; }
 
     public boolean endGame(){
-        if(getResult()==1 || step.index==matrix.getLength()){
+        if(getResult()==1 || helper.deadLock(matrix)){
             return true;
         }
         return false;
@@ -27,8 +27,14 @@ public class Field {
     
     // action //
     public void reset(){
-        matrix.fill(PS.symbolEmpty);
+        setStart(matrix.fill(PS.symbolEmpty),PS.symbolStart);
+    }
+
+    public void setStart(Matrix matrix,String symbol){
+        this.matrix = matrix;
+
         step = stepStart;
+        step.symbol = PS.inversionSymbol(symbol);
     }
 
     public int move(int index){
@@ -38,6 +44,8 @@ public class Field {
             step.move = index;
             step.symbol = PS.inversionSymbol(step.back.symbol );
             matrix.setSymbol(step.move,step.symbol);
+
+            step.result = helper.getWinner(matrix,step.symbol);
             
             return step.move;
         }

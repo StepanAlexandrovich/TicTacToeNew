@@ -7,40 +7,49 @@ import tictactoe.visualization.FrameSettings;
 
 class Cycle {
     private Field field = new Field();
-    private Counter counter = new Counter(field);
-    
+    private Counter counter = new Counter();
+
     private FrameGame frame = new FrameGame();
+
+    private int lastMove = -1;
 
     private void startPosition(){
         field.reset();
-        frame.update(field.getMatrix());
+        lastMove = -1;
+
+        frame.update(field.getMatrix(),lastMove);
     }
 
-    private void movePlayer(){
-        int index = -1;
-        
-        do{
-           
-            boolean b = field.getSymbolNext().equals(PS.getSymbolUser());
-            if(b){ index = frame.getIndexUser(); }
-            else { index = counter.process(); }
-          
-        }while(field.move(index)==-1);
+    private void movePlayer(String text){
+        frame.setText(text + " is thinking");
 
-        frame.update(field.getMatrix());
+        do{
+            int index = -1;
+
+            switch(text){
+                case "pc":   index = counter.process(field.getMatrix(),PS.getSymbolPC()); break;
+                case "user": index = frame.getIndexUser(); break;
+            }
+            lastMove = field.move(index);
+
+        }while(lastMove ==-1);
+
+        frame.setText("");
+
+        frame.update(field.getMatrix(),lastMove);
     }
 
     String getResult(){
         if(field.getResult() == 1){
             if(field.getSymbol().equals(PS.getSymbolPC()))  { return "YOU LOST"; }
-            if(field.getSymbol().equals(PS.getSymbolUser())){ return "YOU WON";  } 
+            if(field.getSymbol().equals(PS.getSymbolUser())){ return "YOU WON";  }
         }else{
             return "DRAW";
         }
-                
+
         return "";
     }
-    
+
     private String frameSettings(){
         return new FrameSettings(getResult()).process();
     }
@@ -49,8 +58,12 @@ class Cycle {
         startPosition();
 
         while(true){
-            movePlayer();
-            
+            if(PS.getSymbolUser().equals(field.getSymbolNext())){
+                movePlayer("user");
+            }else{
+                movePlayer("pc");
+            }
+
             if(field.endGame()){
                 switch(frameSettings()){
                     case "restart": startPosition();      break;

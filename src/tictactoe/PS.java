@@ -14,7 +14,7 @@ public class PS {
     public final static String symbolFinish = "0";
     
     // dynamic
-    private static int depth = 7;
+    private static int depth = 5;
     private static String symbolPC = symbolStart;
     private static String symbolUser = symbolFinish;
 

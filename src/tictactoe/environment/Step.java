@@ -7,12 +7,10 @@ class Step {
     Step back;
     
     String symbol = PS.symbolFinish;
-    int index,move;
+    int move,result;
         
     Step(int index){
         if(index < 1000){
-            this.index = index;
-            
             next = new Step(index+1);
             next.back = this;
         } 
